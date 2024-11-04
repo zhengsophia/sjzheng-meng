@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -51,6 +51,21 @@ const Graph: React.FC = () => {
     (params: Edge<any> | Connection) => setEdges((eds) => addEdge({ ...params, animated: true }, eds)),
     []
   );
+
+  useEffect(() => {
+    const fetchNotebook = async () => {
+      try {
+        const response = await fetch('/twitter-sentiment-extaction-analysis-eda-and-model.ipynb');
+        if (!response.ok) throw new Error('Error in network response');
+        const notebook = await response.json();
+        const notebookCells = notebook.cells.filter((cell: { cell_type: string; }) => cell.cell_type === 'code');
+        console.log(notebookCells);
+      } catch (error) {
+        console.error('Error fetching notebook:', error);
+      }
+    };
+    fetchNotebook();
+  }, []);
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
