@@ -57,6 +57,7 @@ const initialEdges: Edge[] = [
     { id: "e2-3", source: "2", target: "3", style: { stroke: "#000" } },
 ];
 
+
 const Graph: React.FC = () => {
     // initialize graph with dummy data
     const [nodes, setNodes] = useState<Node<NodeData>[]>(initialNodes);
@@ -85,8 +86,16 @@ const Graph: React.FC = () => {
 
     // handles edge creation
     const onConnect = useCallback(
-        (params: Edge<any> | Connection) =>
-            setEdges((eds) => addEdge({ ...params, animated: true }, eds)),
+        (params: Edge<any> | Connection) => {
+            console.log("params:", params); 
+            if (params.sourceHandle === 'bottom' && params.targetHandle === 'top') {
+                console.log('source', params.sourceHandle);
+                console.log('target', params.targetHandle);
+                setEdges((eds) => addEdge({ ...params, animated: true }, eds));
+            } else {
+                console.log("edges can only be created from the bottom of the source to the top of the target!");
+            }
+        },
         []
     );
 
@@ -118,8 +127,10 @@ const Graph: React.FC = () => {
                 const code = cell.source.join("\n");
 
                 const { assigned, used } = extractVariablesFromCode(code);
-                //   console.log('assigned', assigned);
-                //   console.log('used', used);
+                console.log('code', i, code);
+                console.log('assigned', assigned);
+                console.log('used', used);
+                
                 for (let variable of assigned) {
                     lastAssignedTracker[variable] = i;
                 }
@@ -192,8 +203,8 @@ function calculateGraphLayout(nodes: any, edges: any): any {
     g.setGraph({
         rankdir: "TB", // Top to bottom layout
         align: "UL", // Align upper left
-        nodesep: 50, // Pixels between nodes
-        ranksep: 50, // Pixels between ranks
+        nodesep: 10, // smaller horizontal distance between nodes
+        ranksep: 130, // greater vertical distance between nodes
         marginx: 20, // Pixels of margin around the graph
         marginy: 20,
     });
@@ -205,7 +216,7 @@ function calculateGraphLayout(nodes: any, edges: any): any {
     nodes.forEach((node: any) => {
         g.setNode(node.id, {
             label: node.label,
-            width: 100, // Node width in pixels
+            width: 80, // Node width in pixels
             height: 40, // Node height in pixels
         });
     });

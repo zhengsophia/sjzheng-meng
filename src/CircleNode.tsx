@@ -17,8 +17,8 @@ const CircleNode: React.FC<NodeProps> = ({ data }) => {
       textAlign: 'center'
     }}>
       {data.label}
-      <Handle type="target" position={Position.Top} />
-      <Handle type="source" position={Position.Bottom} />
+      <Handle type="source" position={Position.Bottom} id="bottom" />
+      <Handle type="target" position={Position.Top} id="top" />
     </div>
   );
 };

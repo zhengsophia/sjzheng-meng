@@ -25,14 +25,20 @@ function detectPythonVariables(pythonCode) {
     /^\s*([a-zA-Z_]\w*)\s*=(?!=)/,
     // Multiple assignment: x, y = 1, 2
     /^\s*([a-zA-Z_]\w*(?:\s*,\s*[a-zA-Z_]\w*)*)\s*=(?!=)/,
+
     // Augmented assignment: x += 1
     /^\s*([a-zA-Z_]\w*)\s*[+\-*/%&|^]=(?!=)/,
+
+    // Function definition: def func()
+    /^\s*def\s+([a-zA-Z_]\w*)\s*\((.*?)\)/,
+
+    // ------ transient variables that we're not keeping track of ----- //
     // For loop variables: for x in range(10)
-    /^\s*for\s+([a-zA-Z_]\w*(?:\s*,\s*[a-zA-Z_]\w*)*)\s+in/,
+    // /^\s*for\s+([a-zA-Z_]\w*(?:\s*,\s*[a-zA-Z_]\w*)*)\s+in/,
     // List comprehension variables: [x for x in range(10)]
-    /\[.*?for\s+([a-zA-Z_]\w*)\s+in/,
+    // /\[.*?for\s+([a-zA-Z_]\w*)\s+in/,
     // Function parameters: def func(x, y=1)
-    /^\s*def\s+[a-zA-Z_]\w*\s*\((.*?)\)/,
+    // /^\s*def\s+[a-zA-Z_]\w*\s*\((.*?)\)/,
   ];
 
   // First pass: find all assigned variables
@@ -41,14 +47,20 @@ function detectPythonVariables(pythonCode) {
       const match = line.match(pattern);
       if (match) {
         if (pattern.toString().includes("def")) {
-          // Handle function parameters
-          const params = match[1].split(",");
-          params.forEach((param) => {
-            const paramName = param.trim().split("=")[0].trim();
-            if (paramName && /^[a-zA-Z_]\w*$/.test(paramName)) {
-              assigned.add(paramName);
-            }
-          });
+          // ---- do not need to keep track of transient variables in function declarations ---- //
+          // Handle function name
+          const funcName = match[1].trim();
+          if (funcName && /^[a-zA-Z_]\w*$/.test(funcName)) {
+            assigned.add(funcName);
+          }
+          // Process parameters
+          //   const params = match[2].split(",");
+          //   params.forEach((param) => {
+          //     const paramName = param.trim().split("=")[0].trim();
+          //     if (paramName && /^[a-zA-Z_]\w*$/.test(paramName)) {
+          //       assigned.add(paramName);
+          //     }
+          //   });
         } else {
           // Handle other variable assignments
           const vars = match[1].split(",");
@@ -65,16 +77,16 @@ function detectPythonVariables(pythonCode) {
 
   // Second pass: find used variables
   lines.forEach((line) => {
-    // Remove the left side of assignments to only check usage
     let checkLine = line;
 
-    // Remove left side of basic assignments
+    // Remove the left side of assignments to only check usage
+    // (1) Remove left side of basic assignments
     checkLine = checkLine.replace(
       /^\s*[a-zA-Z_]\w*(?:\s*,\s*[a-zA-Z_]\w*)*\s*=\s*/,
       ""
     );
 
-    // Remove left side of augmented assignments
+    // (2) Remove left side of augmented assignments
     checkLine = checkLine.replace(/^\s*[a-zA-Z_]\w*\s*[+\-*/%&|^]=\s*/, "");
 
     // Find all potential variable names in the remaining code
