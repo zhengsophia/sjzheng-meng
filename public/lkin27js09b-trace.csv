@@ -1,0 +1,122 @@
+execution_number,cell_content
+1,"url = ""https://gist.githubusercontent.com/dwootton/6e45d15f0b6936bd8c54df7849930117/raw/c7bdac122b3babce87b6a2f000c71f66c8fba0c2/final_space_titanic.csv""
+ df = pd.read_csv()"
+2,"import pandas as pd
+ import altair_express as alx"
+3,"url = ""https://gist.githubusercontent.com/dwootton/6e45d15f0b6936bd8c54df7849930117/raw/c7bdac122b3babce87b6a2f000c71f66c8fba0c2/final_space_titanic.csv""
+ df = pd.read_csv()"
+4,"url = ""https://gist.githubusercontent.com/dwootton/6e45d15f0b6936bd8c54df7849930117/raw/c7bdac122b3babce87b6a2f000c71f66c8fba0c2/final_space_titanic.csv""
+ df = pd.read_csv(url)"
+5,print(df
+6,print(df)
+7,"check = ['HomePlanet', 'CyroSleep', 'Cabin', 'Destination', 'Age', 'VIP']
+ 
+
+ for col in check:
+  for c in df[col].unique():
+  print(c)"
+8,"check = ['HomePlanet', 'CryoSleep', 'Cabin', 'Destination', 'Age', 'VIP']
+ 
+
+ for col in check:
+  for c in df[col].unique():
+  print(c)"
+9,"check = ['HomePlanet', 'CryoSleep', 'Cabin', 'Destination', 'Age', 'VIP']
+ 
+
+ for col in check:
+  for c in df[col].unique():
+  print(c, len(df[df[col]==c]))"
+10,"check = ['HomePlanet', 'CryoSleep', 'Cabin', 'Destination', 'Age', 'VIP']
+ 
+
+ for col in check:
+  print(col)
+  for c in df[col].unique():
+  print(c, len(df[df[col]==c]))
+  print()"
+11,"check = ['HomePlanet', 'CryoSleep', 'Cabin', 'Destination', 'Age', 'VIP']
+ 
+
+ for col in check:
+  print(col)
+  for c in df[col].unique():
+  print(c, len(df[df[col]==c]))
+  print()"
+12,"survivors = df[df['survived'] == 1]
+ ns = df[df['survived']==0]"
+13,print(survivors)
+14,"check = ['HomePlanet', 'CryoSleep','Destination', 'Age', 'VIP']
+ 
+
+ for col in check:
+  print(col)
+  for c in df[col].unique():
+  print(c, len(df[df[col]==c]))
+  print()"
+15,"check = ['HomePlanet', 'CryoSleep','Destination', 'Age', 'VIP']
+ 
+
+ for col in check:
+  print(col)
+  for c in df[col].unique():
+  print(c, len(df[df[col]==c]))
+  print()"
+16,"check = ['HomePlanet', 'CryoSleep','Destination', 'VIP']
+ 
+
+ for col in check:
+  print(col)
+  for c in df[col].unique():
+  print(c, len(df[df[col]==c]))
+  print()"
+17,s = df[df['survived'==1]]
+18,s = df[df['survived']==1]
+19,print(s
+20,print(s)
+21,"for col in check:
+  print(col)
+  for c in s[col].unique():
+  print(c, len(s[s[col]==c]))
+  print()"
+22,"for col in check:
+  print(col)
+  for c in s[col].unique():
+  print(c, len(s[s[col]==c])/len(s)
+  print()"
+23,"for col in check:
+  print(col)
+  for c in s[col].unique():
+  print(c, len(s[s[col]==c])/len(s))
+  print()"
+24,"check = ['HomePlanet', 'CryoSleep','Destination', 'VIP']
+ 
+
+ for col in check:
+  print(col)
+  for c in df[col].unique():
+  print(c, len(df[df[col]==c])/len(df))
+  print()"
+25,s = df[df['survived']==1]
+26,"for col in check:
+  print(col)
+  for c in s[col].unique():
+  print(c, len(s[s[col]==c])/len(s))
+  print()"
+27,print(df.columns)
+28,"ltv = df[['PassengerId', 'RoomService', 'FoodCourt', 'ShoppingMall',
+  'Spa', 'VRDeck']]"
+29,print(ltv)
+30,mars = df[df['homePlanet'] == 'Mars']
+31,"url = ""https://gist.githubusercontent.com/dwootton/6e45d15f0b6936bd8c54df7849930117/raw/c7bdac122b3babce87b6a2f000c71f66c8fba0c2/final_space_titanic.csv""
+ df = pd.read_csv(url)"
+32,print(df.columns)
+33,mars = df[df['HomePlanet' == 'Mars]
+34,mars = df[df['HomePlanet'] == 'Mars]
+35,mars = df[df['HomePlanet'] == 'Mars']
+36,print(len(mars))
+37,print(mars[mars['survived'] ==1)
+38,print(mars[mars['survived'] ==1]
+39,print(mars[mars['survived'] ==1])
+40,"mars = df[df['HomePlanet'] == 'Mars']
+ print(mars)"

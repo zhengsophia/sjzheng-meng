@@ -12,6 +12,10 @@ import CircleNode from "./CircleNode";
 import extractVariablesFromCode from "./parser";
 import dagre from "@dagrejs/dagre";
 import twitter_sentiment from './data/twitter-sentiment-extaction-analysis-eda-and-model.json';
+import bookings_cancellations from './data/eda-of-bookings-and-ml-to-predict-cancelations.json';
+import lkin27js09b from './data/lkin27js09b.json';
+import { traceJson } from "./tracer";
+
 
 interface NodeData {
     label: string;
@@ -63,25 +67,22 @@ const Graph: React.FC = () => {
     const [nodes, setNodes] = useState<Node<NodeData>[]>(initialNodes);
     const [edges, setEdges] = useState<Edge[]>(initialEdges);
 
-    // // show notebook info in console -> ONLY FOR PROCESSING IPYNB FILE
+    // show notebook info in console -> ONLY FOR PROCESSING IPYNB FILE
     // useEffect(() => {
-    //     const fetchNotebook = async () => {
+    //     const convertNotebookToJSON = async () => {
     //         try {
-    //             const response = await fetch(
-    //                 "/twitter-sentiment-extaction-analysis-eda-and-model.ipynb"
-    //             );
-    //             if (!response.ok) throw new Error("Error in network response");
+    //             const response = await fetch('/eda-of-bookings-and-ml-to-predict-cancelations.ipynb');
+    //             console.log('response', response);
+    //             if (!response.ok) throw new Error('Error in network response');
     //             const notebook = await response.json();
-    //             console.log(notebook);
-    //             const notebookCells = notebook.cells.filter(
-    //                 (cell: { cell_type: string }) => cell.cell_type === "code"
-    //             );
+    //             console.log('notebook json', notebook);
+    //             const notebookCells = notebook.cells.filter((cell: { cell_type: string; }) => cell.cell_type === 'code');
     //             console.log(notebookCells);
     //         } catch (error) {
-    //             console.error("Error fetching notebook:", error);
+    //             console.error('Error fetching notebook:', error);
     //         }
-    //     };
-    //     fetchNotebook();
+    //         };
+    //     convertNotebookToJSON();
     // }, []);
 
     // handles edge creation
@@ -100,10 +101,11 @@ const Graph: React.FC = () => {
     );
 
     useEffect(() => {
+        console.log(traceJson);
         const fetchNotebookCells = async () => {
             // directly read in notebook in json format -> TODO: needs to dynamically convert ipynb to json in actual system
-            console.log(twitter_sentiment);
-            const notebookCells = twitter_sentiment.cells.filter(
+            console.log(lkin27js09b);
+            const notebookCells = lkin27js09b.cells.filter(
                 (cell: { cell_type: string }) => cell.cell_type === "code"
             );
             return notebookCells;
@@ -138,12 +140,14 @@ const Graph: React.FC = () => {
                 for (let variable of used) {
                     console.log(lastAssignedTracker);
                     const source = lastAssignedTracker[variable];
-                    // console.log('source', source);
-                    if (source) {
+                    console.log('source', variable, source);
+                    if (source != null) {
+                        console.log('source exists', source);
                         prelimEdges.push({
                             source: source.toString(),
                             target: i.toString(),
                         });
+                        console.log('edges', prelimEdges);
                     }
                 }
 

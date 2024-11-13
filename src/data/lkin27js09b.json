@@ -1,0 +1,458 @@
+{
+    "cells": [
+        {
+            "cell_type": "code",
+            "execution_count": 1,
+            "metadata": {},
+            "source": [
+                "url = \"https://gist.githubusercontent.com/dwootton/6e45d15f0b6936bd8c54df7849930117/raw/c7bdac122b3babce87b6a2f000c71f66c8fba0c2/final_space_titanic.csv\"",
+                " df = pd.read_csv()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 2,
+            "metadata": {},
+            "source": [
+                "import pandas as pd",
+                " import altair_express as alx"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 3,
+            "metadata": {},
+            "source": [
+                "url = \"https://gist.githubusercontent.com/dwootton/6e45d15f0b6936bd8c54df7849930117/raw/c7bdac122b3babce87b6a2f000c71f66c8fba0c2/final_space_titanic.csv\"",
+                " df = pd.read_csv()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 4,
+            "metadata": {},
+            "source": [
+                "url = \"https://gist.githubusercontent.com/dwootton/6e45d15f0b6936bd8c54df7849930117/raw/c7bdac122b3babce87b6a2f000c71f66c8fba0c2/final_space_titanic.csv\"",
+                " df = pd.read_csv(url)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 5,
+            "metadata": {},
+            "source": [
+                "print(df"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 6,
+            "metadata": {},
+            "source": [
+                "print(df)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 7,
+            "metadata": {},
+            "source": [
+                "check = ['HomePlanet', 'CyroSleep', 'Cabin', 'Destination', 'Age', 'VIP']",
+                " ",
+                "",
+                " for col in check:",
+                "  for c in df[col].unique():",
+                "  print(c)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 8,
+            "metadata": {},
+            "source": [
+                "check = ['HomePlanet', 'CryoSleep', 'Cabin', 'Destination', 'Age', 'VIP']",
+                " ",
+                "",
+                " for col in check:",
+                "  for c in df[col].unique():",
+                "  print(c)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 9,
+            "metadata": {},
+            "source": [
+                "check = ['HomePlanet', 'CryoSleep', 'Cabin', 'Destination', 'Age', 'VIP']",
+                " ",
+                "",
+                " for col in check:",
+                "  for c in df[col].unique():",
+                "  print(c, len(df[df[col]==c]))"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 10,
+            "metadata": {},
+            "source": [
+                "check = ['HomePlanet', 'CryoSleep', 'Cabin', 'Destination', 'Age', 'VIP']",
+                " ",
+                "",
+                " for col in check:",
+                "  print(col)",
+                "  for c in df[col].unique():",
+                "  print(c, len(df[df[col]==c]))",
+                "  print()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 11,
+            "metadata": {},
+            "source": [
+                "check = ['HomePlanet', 'CryoSleep', 'Cabin', 'Destination', 'Age', 'VIP']",
+                " ",
+                "",
+                " for col in check:",
+                "  print(col)",
+                "  for c in df[col].unique():",
+                "  print(c, len(df[df[col]==c]))",
+                "  print()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 12,
+            "metadata": {},
+            "source": [
+                "survivors = df[df['survived'] == 1]",
+                " ns = df[df['survived']==0]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 13,
+            "metadata": {},
+            "source": [
+                "print(survivors)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 14,
+            "metadata": {},
+            "source": [
+                "check = ['HomePlanet', 'CryoSleep','Destination', 'Age', 'VIP']",
+                " ",
+                "",
+                " for col in check:",
+                "  print(col)",
+                "  for c in df[col].unique():",
+                "  print(c, len(df[df[col]==c]))",
+                "  print()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 15,
+            "metadata": {},
+            "source": [
+                "check = ['HomePlanet', 'CryoSleep','Destination', 'Age', 'VIP']",
+                " ",
+                "",
+                " for col in check:",
+                "  print(col)",
+                "  for c in df[col].unique():",
+                "  print(c, len(df[df[col]==c]))",
+                "  print()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 16,
+            "metadata": {},
+            "source": [
+                "check = ['HomePlanet', 'CryoSleep','Destination', 'VIP']",
+                " ",
+                "",
+                " for col in check:",
+                "  print(col)",
+                "  for c in df[col].unique():",
+                "  print(c, len(df[df[col]==c]))",
+                "  print()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 17,
+            "metadata": {},
+            "source": [
+                "s = df[df['survived'==1]]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 18,
+            "metadata": {},
+            "source": [
+                "s = df[df['survived']==1]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 19,
+            "metadata": {},
+            "source": [
+                "print(s"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 20,
+            "metadata": {},
+            "source": [
+                "print(s)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 21,
+            "metadata": {},
+            "source": [
+                "for col in check:",
+                "  print(col)",
+                "  for c in s[col].unique():",
+                "  print(c, len(s[s[col]==c]))",
+                "  print()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 22,
+            "metadata": {},
+            "source": [
+                "for col in check:",
+                "  print(col)",
+                "  for c in s[col].unique():",
+                "  print(c, len(s[s[col]==c])/len(s)",
+                "  print()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 23,
+            "metadata": {},
+            "source": [
+                "for col in check:",
+                "  print(col)",
+                "  for c in s[col].unique():",
+                "  print(c, len(s[s[col]==c])/len(s))",
+                "  print()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 24,
+            "metadata": {},
+            "source": [
+                "check = ['HomePlanet', 'CryoSleep','Destination', 'VIP']",
+                " ",
+                "",
+                " for col in check:",
+                "  print(col)",
+                "  for c in df[col].unique():",
+                "  print(c, len(df[df[col]==c])/len(df))",
+                "  print()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 25,
+            "metadata": {},
+            "source": [
+                "s = df[df['survived']==1]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 26,
+            "metadata": {},
+            "source": [
+                "for col in check:",
+                "  print(col)",
+                "  for c in s[col].unique():",
+                "  print(c, len(s[s[col]==c])/len(s))",
+                "  print()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 27,
+            "metadata": {},
+            "source": [
+                "print(df.columns)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 28,
+            "metadata": {},
+            "source": [
+                "ltv = df[['PassengerId', 'RoomService', 'FoodCourt', 'ShoppingMall',",
+                "  'Spa', 'VRDeck']]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 29,
+            "metadata": {},
+            "source": [
+                "print(ltv)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 30,
+            "metadata": {},
+            "source": [
+                "mars = df[df['homePlanet'] == 'Mars']"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 31,
+            "metadata": {},
+            "source": [
+                "url = \"https://gist.githubusercontent.com/dwootton/6e45d15f0b6936bd8c54df7849930117/raw/c7bdac122b3babce87b6a2f000c71f66c8fba0c2/final_space_titanic.csv\"",
+                " df = pd.read_csv(url)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 32,
+            "metadata": {},
+            "source": [
+                "print(df.columns)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 33,
+            "metadata": {},
+            "source": [
+                "mars = df[df['HomePlanet' == 'Mars]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 34,
+            "metadata": {},
+            "source": [
+                "mars = df[df['HomePlanet'] == 'Mars]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 35,
+            "metadata": {},
+            "source": [
+                "mars = df[df['HomePlanet'] == 'Mars']"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 36,
+            "metadata": {},
+            "source": [
+                "print(len(mars))"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 37,
+            "metadata": {},
+            "source": [
+                "print(mars[mars['survived'] ==1)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 38,
+            "metadata": {},
+            "source": [
+                "print(mars[mars['survived'] ==1]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 39,
+            "metadata": {},
+            "source": [
+                "print(mars[mars['survived'] ==1])"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 40,
+            "metadata": {},
+            "source": [
+                "mars = df[df['HomePlanet'] == 'Mars']",
+                " print(mars)"
+            ],
+            "outputs": []
+        }
+    ],
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {
+            "name": "python",
+            "version": "3.x"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 2
+}
