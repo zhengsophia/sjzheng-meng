@@ -1,0 +1,137 @@
+execution_number,cell_content
+1,"import pandas as pd
+ import altair_express as alx"
+2,"url = """" # Hit the ""Start"" button in the toolbar and fill in your user code and then in the second prompt, list your notebook as ""Happiness"" to get the data
+ df = pd.read_csv(url)"
+3,"url = ""https://gist.githubusercontent.com/dwootton/d7b2fc427697928e7fe218cc2add0f53/raw/500cd1d5f98143da8d733a95b33087d146938cde/World_happiness.csv"" # Hit the ""Start"" button in the toolbar and fill in your user code and then in the second prompt, list your notebook as ""Happiness"" to get the data
+ df = pd.read_csv(url)"
+4,df
+5,df.decribe()
+6,df.info()
+7,df.describe()
+8,df.plot()
+9,df
+10,"plt.scatter(df[""year""], df[""happinessScore""])"
+11,"alx.scatterplot(df,x='year',y='happinessScore')"
+12,"alx.scatterplot(df,x='year',y='logGDPPerCapita')"
+13,"alx.jointplot(df,x='year',y='logGDPPerCapita')"
+14,"alx.jointplot(df,x='happinessScore',y='logGDPPerCapita')"
+15,"alx.jointplot(df[""2008""],x='happinessScore',y='logGDPPerCapita')"
+16,"df = df[""year""] = 2008"
+17,"df[""year""] == 2008"
+18,"df[""year""] == 2008"
+19,df[df['year'] == 2008]
+20,"df[df['year'] == ""2008""]"
+21,df[df['year'] == 2008]
+22,df
+23,"import pandas as pd
+ import altair_express as alx"
+24,"url = ""https://gist.githubusercontent.com/dwootton/d7b2fc427697928e7fe218cc2add0f53/raw/500cd1d5f98143da8d733a95b33087d146938cde/World_happiness.csv"" # Hit the ""Start"" button in the toolbar and fill in your user code and then in the second prompt, list your notebook as ""Happiness"" to get the data
+ df = pd.read_csv(url)"
+25,df
+26,df[df['year'] == 2008]
+27,dfx = df[df['year'] == 2008]
+28,"alx.jointplot(dfx,x='happinessScore',y='logGDPPerCapita')"
+29,"dfx = df[df['year'] == 2014]
+ alx.jointplot(dfx,x='happinessScore',y='logGDPPerCapita')"
+30,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2014 = df[df['year'] == 2014]
+ 
+
+ alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita')
+ alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+31,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2014 = df[df['year'] == 2014]
+ 
+
+ alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita')
+ alx.show()
+ alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+32,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2014 = df[df['year'] == 2014]
+ 
+
+ alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita') & alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+33,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2014 = df[df['year'] == 2014]
+ alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita')｜alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+34,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2014 = df[df['year'] == 2014]
+ alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita') & alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+35,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2014 = df[df['year'] == 2014]
+ alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita') | alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+36,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2014 = df[df['year'] == 2014]
+ alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita') | alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+37,df.year
+38,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2021 = df[df['year'] == 2021]
+ 
+
+ alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita') | alx.jointplot(df2021,x='happinessScore',y='logGDPPerCapita')"
+39,df
+40,df
+41,"pd.describe_option('display')
+ 
+
+ df"
+42,"pd.describe_option('display')
+ pd.set_option('display.max_rows', len(df))"
+43,"pd.set_option('display.max_rows', len(df))"
+44,"pd.set_option('display.max_rows', len(df))
+ df"
+45,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2021 = df[df['year'] == 2021]
+ ddd
+ 
+
+ generosity corruption
+ alx.jointplot(df2008,x='generosity',y='corruption') | alx.jointplot(df2021,x='generosity',y='corruption')"
+46,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2021 = df[df['year'] == 2021]
+ ddd
+ 
+
+ alx.jointplot(df2008,x='generosity',y='corruption') | alx.jointplot(df2021,x='generosity',y='corruption')"
+47,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2021 = df[df['year'] == 2021]
+ 
+
+ alx.jointplot(df2008,x='generosity',y='corruption') | alx.jointplot(df2021,x='generosity',y='corruption')"
+48,"df2008 = df[df['year'] == 2008]
+ 
+
+ df2021 = df[df['year'] == 2021]
+ 
+
+ alx.jointplot(df2008,x='generosity',y='corruption') & alx.jointplot(df2021,x='generosity',y='corruption')"
+49,df.country
+50,Series.unique( df.country)
+51,"from pandas import Series
+ Series.unique( df.country)"
+52,"from pandas import Series
+ len(Series.unique( df.country))"
+53,df

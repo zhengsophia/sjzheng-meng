@@ -13,7 +13,8 @@ import extractVariablesFromCode from "./parser";
 import dagre from "@dagrejs/dagre";
 import twitter_sentiment from './data/twitter-sentiment-extaction-analysis-eda-and-model.json';
 import bookings_cancellations from './data/eda-of-bookings-and-ml-to-predict-cancelations.json';
-import lkin27js09b from './data/lkin27js09b.json';
+import lkin27js09bspace from './data/lkin27js09bspace.json';
+import bjs827ee1uhappiness from './data/bjs827ee1uhappiness.json';
 import { traceJson } from "./tracer";
 
 
@@ -104,8 +105,8 @@ const Graph: React.FC = () => {
         console.log(traceJson);
         const fetchNotebookCells = async () => {
             // directly read in notebook in json format -> TODO: needs to dynamically convert ipynb to json in actual system
-            console.log(lkin27js09b);
-            const notebookCells = lkin27js09b.cells.filter(
+            console.log(twitter_sentiment);
+            const notebookCells = twitter_sentiment.cells.filter(
                 (cell: { cell_type: string }) => cell.cell_type === "code"
             );
             return notebookCells;
@@ -208,7 +209,7 @@ function calculateGraphLayout(nodes: any, edges: any): any {
         rankdir: "TB", // Top to bottom layout
         align: "UL", // Align upper left
         nodesep: 10, // smaller horizontal distance between nodes
-        ranksep: 130, // greater vertical distance between nodes
+        ranksep: 180, // greater vertical distance between nodes
         marginx: 20, // Pixels of margin around the graph
         marginy: 20,
     });
@@ -220,8 +221,8 @@ function calculateGraphLayout(nodes: any, edges: any): any {
     nodes.forEach((node: any) => {
         g.setNode(node.id, {
             label: node.label,
-            width: 80, // Node width in pixels
-            height: 40, // Node height in pixels
+            width: 100, // Node width in pixels
+            height: 60, // Node height in pixels
         });
     });
 

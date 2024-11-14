@@ -1,0 +1,577 @@
+{
+    "cells": [
+        {
+            "cell_type": "code",
+            "execution_count": 1,
+            "metadata": {},
+            "source": [
+                "import pandas as pd",
+                " import altair_express as alx"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 2,
+            "metadata": {},
+            "source": [
+                "url = \"\" # Hit the \"Start\" button in the toolbar and fill in your user code and then in the second prompt, list your notebook as \"Happiness\" to get the data",
+                " df = pd.read_csv(url)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 3,
+            "metadata": {},
+            "source": [
+                "url = \"https://gist.githubusercontent.com/dwootton/d7b2fc427697928e7fe218cc2add0f53/raw/500cd1d5f98143da8d733a95b33087d146938cde/World_happiness.csv\" # Hit the \"Start\" button in the toolbar and fill in your user code and then in the second prompt, list your notebook as \"Happiness\" to get the data",
+                " df = pd.read_csv(url)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 4,
+            "metadata": {},
+            "source": [
+                "df"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 5,
+            "metadata": {},
+            "source": [
+                "df.decribe()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 6,
+            "metadata": {},
+            "source": [
+                "df.info()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 7,
+            "metadata": {},
+            "source": [
+                "df.describe()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 8,
+            "metadata": {},
+            "source": [
+                "df.plot()"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 9,
+            "metadata": {},
+            "source": [
+                "df"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 10,
+            "metadata": {},
+            "source": [
+                "plt.scatter(df[\"year\"], df[\"happinessScore\"])"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 11,
+            "metadata": {},
+            "source": [
+                "alx.scatterplot(df,x='year',y='happinessScore')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 12,
+            "metadata": {},
+            "source": [
+                "alx.scatterplot(df,x='year',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 13,
+            "metadata": {},
+            "source": [
+                "alx.jointplot(df,x='year',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 14,
+            "metadata": {},
+            "source": [
+                "alx.jointplot(df,x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 15,
+            "metadata": {},
+            "source": [
+                "alx.jointplot(df[\"2008\"],x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 16,
+            "metadata": {},
+            "source": [
+                "df = df[\"year\"] = 2008"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 17,
+            "metadata": {},
+            "source": [
+                "df[\"year\"] == 2008"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 18,
+            "metadata": {},
+            "source": [
+                "df[\"year\"] == 2008"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 19,
+            "metadata": {},
+            "source": [
+                "df[df['year'] == 2008]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 20,
+            "metadata": {},
+            "source": [
+                "df[df['year'] == \"2008\"]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 21,
+            "metadata": {},
+            "source": [
+                "df[df['year'] == 2008]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 22,
+            "metadata": {},
+            "source": [
+                "df"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 23,
+            "metadata": {},
+            "source": [
+                "import pandas as pd",
+                " import altair_express as alx"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 24,
+            "metadata": {},
+            "source": [
+                "url = \"https://gist.githubusercontent.com/dwootton/d7b2fc427697928e7fe218cc2add0f53/raw/500cd1d5f98143da8d733a95b33087d146938cde/World_happiness.csv\" # Hit the \"Start\" button in the toolbar and fill in your user code and then in the second prompt, list your notebook as \"Happiness\" to get the data",
+                " df = pd.read_csv(url)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 25,
+            "metadata": {},
+            "source": [
+                "df"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 26,
+            "metadata": {},
+            "source": [
+                "df[df['year'] == 2008]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 27,
+            "metadata": {},
+            "source": [
+                "dfx = df[df['year'] == 2008]"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 28,
+            "metadata": {},
+            "source": [
+                "alx.jointplot(dfx,x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 29,
+            "metadata": {},
+            "source": [
+                "dfx = df[df['year'] == 2014]",
+                " alx.jointplot(dfx,x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 30,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2014 = df[df['year'] == 2014]",
+                " ",
+                "",
+                " alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita')",
+                " alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 31,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2014 = df[df['year'] == 2014]",
+                " ",
+                "",
+                " alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita')",
+                " alx.show()",
+                " alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 32,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2014 = df[df['year'] == 2014]",
+                " ",
+                "",
+                " alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita') & alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 33,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2014 = df[df['year'] == 2014]",
+                " alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita')｜alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 34,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2014 = df[df['year'] == 2014]",
+                " alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita') & alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 35,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2014 = df[df['year'] == 2014]",
+                " alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita') | alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 36,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2014 = df[df['year'] == 2014]",
+                " alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita') | alx.jointplot(df2014,x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 37,
+            "metadata": {},
+            "source": [
+                "df.year"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 38,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2021 = df[df['year'] == 2021]",
+                " ",
+                "",
+                " alx.jointplot(df2008,x='happinessScore',y='logGDPPerCapita') | alx.jointplot(df2021,x='happinessScore',y='logGDPPerCapita')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 39,
+            "metadata": {},
+            "source": [
+                "df"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 40,
+            "metadata": {},
+            "source": [
+                "df"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 41,
+            "metadata": {},
+            "source": [
+                "pd.describe_option('display')",
+                " ",
+                "",
+                " df"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 42,
+            "metadata": {},
+            "source": [
+                "pd.describe_option('display')",
+                " pd.set_option('display.max_rows', len(df))"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 43,
+            "metadata": {},
+            "source": [
+                "pd.set_option('display.max_rows', len(df))"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 44,
+            "metadata": {},
+            "source": [
+                "pd.set_option('display.max_rows', len(df))",
+                " df"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 45,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2021 = df[df['year'] == 2021]",
+                " ddd",
+                " ",
+                "",
+                " generosity corruption",
+                " alx.jointplot(df2008,x='generosity',y='corruption') | alx.jointplot(df2021,x='generosity',y='corruption')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 46,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2021 = df[df['year'] == 2021]",
+                " ddd",
+                " ",
+                "",
+                " alx.jointplot(df2008,x='generosity',y='corruption') | alx.jointplot(df2021,x='generosity',y='corruption')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 47,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2021 = df[df['year'] == 2021]",
+                " ",
+                "",
+                " alx.jointplot(df2008,x='generosity',y='corruption') | alx.jointplot(df2021,x='generosity',y='corruption')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 48,
+            "metadata": {},
+            "source": [
+                "df2008 = df[df['year'] == 2008]",
+                " ",
+                "",
+                " df2021 = df[df['year'] == 2021]",
+                " ",
+                "",
+                " alx.jointplot(df2008,x='generosity',y='corruption') & alx.jointplot(df2021,x='generosity',y='corruption')"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 49,
+            "metadata": {},
+            "source": [
+                "df.country"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 50,
+            "metadata": {},
+            "source": [
+                "Series.unique( df.country)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 51,
+            "metadata": {},
+            "source": [
+                "from pandas import Series",
+                " Series.unique( df.country)"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 52,
+            "metadata": {},
+            "source": [
+                "from pandas import Series",
+                " len(Series.unique( df.country))"
+            ],
+            "outputs": []
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 53,
+            "metadata": {},
+            "source": [
+                "df"
+            ],
+            "outputs": []
+        }
+    ],
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {
+            "name": "python",
+            "version": "3.x"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 2
+}

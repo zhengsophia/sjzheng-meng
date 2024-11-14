@@ -96,13 +96,13 @@ function convertTraceToNotebook(trace: CellEntry[]): Notebook {
 let traceJson: Notebook | null = null;
 
 // input the filepath from being in the public folder
-const csvFilePath = './lkin27js09b-trace.csv';
+const csvFilePath = './bjs827ee1uhappiness.csv';
 
 parseCSV(csvFilePath)
   .then((executionCode) => {
     console.log('execution code', executionCode)
     traceJson = convertTraceToNotebook(executionCode);
-    console.log("Converted Jupyter Notebook JSON:", traceJson);
+    console.log("notebook JSON:", traceJson);
   })
   .catch((error) => {
     console.error("Error parsing CSV:", error);
