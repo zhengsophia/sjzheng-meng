@@ -16,6 +16,7 @@ function detectPythonVariables(pythonCode) {
 
   const cleanCode = removeStrings(removeComments(pythonCode));
   const lines = cleanCode.split("\n");
+
   const assigned = new Set();
   const used = new Set();
 
@@ -25,10 +26,8 @@ function detectPythonVariables(pythonCode) {
     /^\s*([a-zA-Z_]\w*)\s*=(?!=)/,
     // Multiple assignment: x, y = 1, 2
     /^\s*([a-zA-Z_]\w*(?:\s*,\s*[a-zA-Z_]\w*)*)\s*=(?!=)/,
-
     // Augmented assignment: x += 1
     /^\s*([a-zA-Z_]\w*)\s*[+\-*/%&|^]=(?!=)/,
-
     // Function definition: def func()
     /^\s*def\s+([a-zA-Z_]\w*)\s*\((.*?)\)/,
 
@@ -85,7 +84,6 @@ function detectPythonVariables(pythonCode) {
       /^\s*[a-zA-Z_]\w*(?:\s*,\s*[a-zA-Z_]\w*)*\s*=\s*/,
       ""
     );
-
     // (2) Remove left side of augmented assignments
     checkLine = checkLine.replace(/^\s*[a-zA-Z_]\w*\s*[+\-*/%&|^]=\s*/, "");
 
