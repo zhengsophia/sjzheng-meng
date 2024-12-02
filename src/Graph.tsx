@@ -264,7 +264,7 @@ const Graph: React.FC = () => {
                 if (!response.ok) throw new Error('Failed to fetch notebook');
                 const notebook = await response.json();
                 console.log('notebook response:', notebook);
-                const notebookCells = notebook.cells.filter((cell: { cell_type: string; }) => cell.cell_type === 'code');
+                const notebookCells = notebook.cells;
                 console.log('code cells:', notebookCells);
                 return notebookCells;
             } catch (error) {
