@@ -18,12 +18,37 @@ dotenv.config(); // Load environment variables from .env file
 
 app.use(express.json());
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
-const fetchNotebookCells = async (notebookData) => {
-  // Simulate fetching notebook cells. In practice, this could be done from a database or another source
-  return notebookData.cells.filter((cell) => cell.cell_type === "code");
+// Fetch notebook and filter code cells
+const fetchNotebookCells = async (notebookName) => {
+  const notebookPath = path.join(__dirname, "notebooks", notebookName);
+  try {
+    // reading the notebook file
+    const notebookData = fs.readFileSync(notebookPath, "utf8");
+    const notebook = JSON.parse(notebookData);
+    // filtering the code cells
+    const notebookCells = notebook.cells.filter(
+      (cell) => cell.cell_type === "code"
+    );
+    console.log("notebook cells", notebookCells);
+    return notebookCells;
+  } catch (error) {
+    console.error("Error reading notebook:", error);
+    throw new Error("Failed to read or parse notebook");
+  }
 };
+
+// API route to get filtered notebook cells
+app.get("/notebooks/:notebookName", async (req, res) => {
+  const notebookName = req.params.notebookName;
+  try {
+    const notebookCells = await fetchNotebookCells(notebookName);
+    res.json({ cells: notebookCells });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to process notebook" });
+  }
+});
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 const generatePrompt = (codeCells) => {
   const prompt = `Analyze the following json of all notebook cells and group them based on their functionality or structural patterns of analysis such as 'Environment Setup', 'Feature Engineering', 'Modeling', etc.
