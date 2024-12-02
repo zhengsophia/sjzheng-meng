@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import ReactFlow, {
     MiniMap,
     Controls,
@@ -12,6 +12,7 @@ import MainNode from "./MainNode";
 import SatelliteNode from "./SatelliteNode";
 import extractVariablesFromCode from "./parser";
 import dagre from "@dagrejs/dagre";
+import OpenAI from "openai";
 import twitter_sentiment from './data/twitter-sentiment-extaction-analysis-eda-and-model.json';
 import bookings_cancellations from './data/eda-of-bookings-and-ml-to-predict-cancelations.json';
 import lkin27js09bspace from './data/lkin27js09bspace.json';
@@ -20,7 +21,6 @@ import fitbit_fitness_tracker_data from './data/fitbit_fitness_tracker_data.json
 import titanic_top_4_with_ensemble_modeling from './data/titanic_top_4_with_ensemble_modeling.json';
 
 import { traceJson } from "./tracer";
-
 
 interface NodeData {
     label: string;
@@ -69,26 +69,29 @@ const initialEdges: Edge[] = [
 
 
 const Graph: React.FC = () => {
+    const hasPrompted = useRef(false);
+
     // initialize graph with dummy data
-    const [nodes, setNodes] = useState<Node<NodeData>[]>(initialNodes);
-    const [edges, setEdges] = useState<Edge[]>(initialEdges);
+    const [nodes, setNodes] = useState<Node<NodeData>[]>([]);
+    const [edges, setEdges] = useState<Edge[]>([]);
 
     // show notebook info in console -> ONLY FOR PROCESSING IPYNB FILE
     // useEffect(() => {
-    //     const convertNotebookToJSON = async () => {
-    //         try {
-    //             const response = await fetch('/titanic-top-4-with-ensemble-modeling.ipynb');
-    //             console.log('response', response);
-    //             if (!response.ok) throw new Error('Error in network response');
-    //             const notebook = await response.json();
-    //             console.log('notebook json', notebook);
-    //             const notebookCells = notebook.cells.filter((cell: { cell_type: string; }) => cell.cell_type === 'code');
-    //             console.log(notebookCells);
-    //         } catch (error) {
-    //             console.error('Error fetching notebook:', error);
-    //         }
-    //         };
-    //     convertNotebookToJSON();
+        // public folder method
+        // const convertNotebookToJSON = async () => {
+        //     try {
+        //         const response = await fetch('/titanic-top-4-with-ensemble-modeling.ipynb');
+        //         console.log('response', response);
+        //         if (!response.ok) throw new Error('Error in network response');
+        //         const notebook = await response.json();
+        //         console.log('notebook json', notebook);
+        //         const notebookCells = notebook.cells.filter((cell: { cell_type: string; }) => cell.cell_type === 'code');
+        //         console.log(notebookCells);
+        //     } catch (error) {
+        //         console.error('Error fetching notebook:', error);
+        //     }
+        //     };
+        // convertNotebookToJSON();
     // }, []);
 
     // handles edge creation
@@ -106,62 +109,234 @@ const Graph: React.FC = () => {
         []
     );
 
+    // const fetchNotebookCells = async () => {
+    //     const notebookCells = await titanic_top_4_with_ensemble_modeling.cells.filter(
+    //         (cell: { cell_type: string }) => cell.cell_type === "code"
+    //     );
+    //     console.log('notebook cells', notebookCells);
+    //     return notebookCells;
+    // };
+    
+    // function generatePrompt(codeCells: any) {
+    //     const prompt = `Analyze the the following json of all notebook cells and group them based on their functionality or structural patterns of analysis such as 'Environment Setup', 'Feature Engineering', 'Modeling', etc.
+    
+    //     For each group, return a Javascript object with a concise label of the analysis functionality and the cell executions numbers contained
+    //     (i.e. {"label": "Environment Setup", "cell_start": 1, "cell_end": 4})
+    
+    //     ${codeCells.map((code: any, i: any) => `Block ${i + 1}:\n${code}`).join('\n\n')}
+    //     `;
+    //     return prompt;
+    // }
+    
+    // async function getChatResponse(prompt: any) {
+    //     const completion = await openai.chat.completions.create({
+    //         model: "gpt-4o-mini",
+    //         messages: [
+    //             { role: "system", content: "You are a helpful assistant." },
+    //             {
+    //                 role: "user",
+    //                 content: prompt,
+    //             },
+    //         ],
+    //     });
+    //     return completion.choices[0].message;
+    // }
+    
+    // async function initializeGraph(): Promise<any> {
+    //     // previous parameters: inputArray: Array<any>, getNodeData: (item: any) => Node
+    //     let prelimNodes: PreliminaryNode[] = [];
+    //     let prelimEdges: PreliminaryEdges[] = [];
+    //     const lastAssignedTracker: Record<string, number> = {};
+
+    //     const notebookCells = await fetchNotebookCells();
+    //     const prompt = generatePrompt(notebookCells);
+    //     console.log('prompt', prompt)
+    //     const chatResponse = await getChatResponse(prompt);
+    //     console.log('llm response', chatResponse);
+    //     for (let i = 0; i < notebookCells.length; i++) {
+    //         const cell = notebookCells[i];
+    //         const code = cell.source.join("\n");
+    //         console.log('cell', cell);
+
+    //         // (1) TRACKING THE OUTPUT ARTIFACTS OF A CELL
+    //         let artifacts: Array<string> = [];
+    //         if (cell.outputs) {
+    //             const outputs = cell.outputs;
+    //             for (const output of outputs) {
+    //                 console.log('output', output)
+    //                 // grabbing the outputs data object in json
+    //                 if ('data' in output) { 
+    //                     if (output.data) {
+    //                         // checking for visualization artifacts
+    //                         if (output.output_type === "display_data") {
+    //                             artifacts.push("vis");
+    //                         }
+    //                         // checking for df artifacts 
+    //                         else if (output.output_type === "execute_result") {
+    //                             if ('text/html' in output.data) {
+    //                                 for (const line of output.data['text/html']) {
+    //                                     if (line.includes('<table')) {
+    //                                         artifacts.push("df");
+    //                                     }
+    //                                 }
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+
+    //         // (2) INITIALIZING CELLS BASED ON VARIABLES ASSIGNED OR USED FOR EDGE CREATION
+    //         const { assigned, used } = extractVariablesFromCode(code);
+    //         console.log('code', i+1, code);
+    //         // console.log('assigned', assigned);
+    //         // console.log('used', used);
+            
+    //         for (let variable of assigned) {
+    //             lastAssignedTracker[variable] = (i+1);
+    //         }
+
+    //         for (let variable of used) {
+    //             // console.log('tracker', lastAssignedTracker);
+    //             const source = lastAssignedTracker[variable];
+    //             // console.log('source', variable, source);
+    //             if (source != null) {
+    //                 // console.log('source exists', source);
+    //                 prelimEdges.push({
+    //                     source: source.toString(),
+    //                     target: (i+1).toString(),
+    //                 });
+    //                 // console.log('edges', prelimEdges);
+    //             }
+    //         }
+
+    //         // (3) MAIN NODE CREATION
+    //             // for each notebook cell,
+    //             // extract cellId
+    //             // extract uuid (unique for each run of cell?)
+    //             // extract all variables created in it
+    //             // extract all variables that are updated in it
+    //             // code in source : string[]
+    //             // pushing these nodes before they have positions
+    //         prelimNodes.push({
+    //             id: (i+1).toString(),
+    //             data: { label: (i+1).toString() },
+    //         });
+
+    //         // (3) SATELLITE NODE CREATION
+    //         artifacts.forEach((artifact, index) => {
+    //             console.log('artifact', i+1, artifact)
+    //             const satelliteNodeId = `${i+1}-artifact-${index}`;
+    //             prelimNodes.push({
+    //                 id: satelliteNodeId,
+    //                 data: { label: artifact },
+    //             });
+                
+    //             // NOTE: don't need to create an edge actually?
+    //             // creating edge from main node to satellite node
+    //             // prelimEdges.push({
+    //             //     source: i.toString(),
+    //             //     target: satelliteNodeId,
+    //             //     style: satelliteEdgeStyle
+    //             // });
+    //         });
+    //     }
+
+    //     // process nodes given layout to add position 
+    //     const { edges, nodes } = calculateGraphLayout(
+    //         prelimNodes,
+    //         prelimEdges
+    //     );
+
+    //     return { edges, nodes };
+    // }
+    
+
     useEffect(() => {
-        // console.log(traceJson);
-        const fetchNotebookCells = async () => {
-            // directly read in notebook in json format -> TODO: needs to dynamically convert ipynb to json in actual system
-            
-            ///////////////////////
-            // TWITTER SENTIMENT //
-            //////////////////////
-            // console.log('notebook', twitter_sentiment);
-            // const notebookCells = twitter_sentiment.cells.filter(
-            //     (cell: { cell_type: string }) => cell.cell_type === "code"
-            // );
+        console.log("useEffect triggered");
 
-            /////////////////////////////
-            // BOOKINGS CANCELLATIONS //
-            ////////////////////////////
-            // const notebookCells = bookings_cancellations.cells.filter(
-            //     (cell: { cell_type: string }) => cell.cell_type === "code"
-            // );
-
-            //////////////////////
-            //  FITBIT TRACKER //
-            /////////////////////
-            // const notebookCells = fitbit_fitness_tracker_data.cells.filter(
-            //     (cell: { cell_type: string }) => cell.cell_type === "code"
-            // );
-
-            ////////////////////////
-            //  TITANIC MODELING //
-            ///////////////////////
-            const notebookCells = titanic_top_4_with_ensemble_modeling.cells.filter(
-                (cell: { cell_type: string }) => cell.cell_type === "code"
-            );
-
-            
-            return notebookCells;
+        ///////////////////////////////////////////////
+        // FETCH NOTEBOOK from the backend server.js //
+        ///////////////////////////////////////////////
+        const fetchNotebook = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/notebooks/titanic-top-4-with-ensemble-modeling.ipynb');
+                if (!response.ok) throw new Error('Failed to fetch notebook');
+                const notebook = await response.json();
+                console.log('notebook response:', notebook);
+                const notebookCells = notebook.cells.filter((cell: { cell_type: string; }) => cell.cell_type === 'code');
+                console.log('code cells:', notebookCells);
+                return notebookCells;
+            } catch (error) {
+                console.error('Error:', error);
+            }
         };
 
-        intializeGraph().then((result) => {
-            console.log("result", result);
-            // set nodes and edges
-        });
+        // console.log(traceJson);
+        // const fetchNotebookCells = async () => {
+        //     // directly read in notebook in json format -> TODO: needs to dynamically convert ipynb to json in actual system
+            
+        //     ///////////////////////
+        //     // TWITTER SENTIMENT //
+        //     //////////////////////
+        //     // console.log('notebook', twitter_sentiment);
+        //     // const notebookCells = twitter_sentiment.cells.filter(
+        //     //     (cell: { cell_type: string }) => cell.cell_type === "code"
+        //     // );
 
+        //     /////////////////////////////
+        //     // BOOKINGS CANCELLATIONS //
+        //     ////////////////////////////
+        //     // const notebookCells = bookings_cancellations.cells.filter(
+        //     //     (cell: { cell_type: string }) => cell.cell_type === "code"
+        //     // );
+
+        //     //////////////////////
+        //     //  FITBIT TRACKER //
+        //     /////////////////////
+        //     // const notebookCells = fitbit_fitness_tracker_data.cells.filter(
+        //     //     (cell: { cell_type: string }) => cell.cell_type === "code"
+        //     // );
+
+        //     ////////////////////////
+        //     //  TITANIC MODELING //
+        //     ///////////////////////
+        //     const notebookCells = titanic_top_4_with_ensemble_modeling.cells.filter(
+        //         (cell: { cell_type: string }) => cell.cell_type === "code"
+        //     );
+
+        //     console.log('notebook cells', notebookCells);
+        //     return notebookCells;
+        // };
+
+        // function generatePrompt(codeCells: any) {
+        //     const prompt =  `Analyze the the following json of all notebook cells and group them based on their functionality or structural patterns of analysis such as 'Environment Setup', 'Feature Engineering', 'Modeling', etc. 
+    
+        //     For each group, return a Javascript object with a  concise label of the analysis functionality and the cell executions numbers contained 
+        //     (i.e. {"label": "Environment Setup", "cell_start": 1, "cell_end": 4})
+        
+        //     ${codeCells.map((code: any, i: any) => `Block ${i + 1}:\n${code}`).join('\n\n')}
+        //     `;
+        //     return prompt;
+        // }
+    
         // returns nodes and edges based on notebook cells
-        async function intializeGraph(): Promise<any> {
+        async function initializeGraph(): Promise<any> {
             // previous parameters: inputArray: Array<any>, getNodeData: (item: any) => Node
             let prelimNodes: PreliminaryNode[] = [];
             let prelimEdges: PreliminaryEdges[] = [];
             const lastAssignedTracker: Record<string, number> = {};
-
-            const notebookCells = await fetchNotebookCells();
+    
+            const notebookCells = await fetchNotebook();
+            // const prompt = generatePrompt(notebookCells);
+            // console.log('prompt', prompt)
+            // const chatResponse = await getChatResponse(prompt);
+            // console.log('llm response', chatResponse);
             for (let i = 0; i < notebookCells.length; i++) {
                 const cell = notebookCells[i];
                 const code = cell.source.join("\n");
                 console.log('cell', cell);
-
+    
                 // (1) TRACKING THE OUTPUT ARTIFACTS OF A CELL
                 let artifacts: Array<string> = [];
                 if (cell.outputs) {
@@ -189,7 +364,7 @@ const Graph: React.FC = () => {
                         }
                     }
                 }
-
+    
                 // (2) INITIALIZING CELLS BASED ON VARIABLES ASSIGNED OR USED FOR EDGE CREATION
                 const { assigned, used } = extractVariablesFromCode(code);
                 console.log('code', i+1, code);
@@ -199,7 +374,7 @@ const Graph: React.FC = () => {
                 for (let variable of assigned) {
                     lastAssignedTracker[variable] = (i+1);
                 }
-
+    
                 for (let variable of used) {
                     // console.log('tracker', lastAssignedTracker);
                     const source = lastAssignedTracker[variable];
@@ -213,7 +388,7 @@ const Graph: React.FC = () => {
                         // console.log('edges', prelimEdges);
                     }
                 }
-
+    
                 // (3) MAIN NODE CREATION
                     // for each notebook cell,
                     // extract cellId
@@ -226,7 +401,7 @@ const Graph: React.FC = () => {
                     id: (i+1).toString(),
                     data: { label: (i+1).toString() },
                 });
-
+    
                 // (3) SATELLITE NODE CREATION
                 artifacts.forEach((artifact, index) => {
                     console.log('artifact', i+1, artifact)
@@ -245,22 +420,44 @@ const Graph: React.FC = () => {
                     // });
                 });
             }
-
+    
             // process nodes given layout to add position 
             const { edges, nodes } = calculateGraphLayout(
                 prelimNodes,
                 prelimEdges
             );
-
+    
             return { edges, nodes };
         }
 
         // call at end of use effect
-        intializeGraph().then((result) => {
+        initializeGraph().then((result) => {
             console.log("result", result);
             setNodes(result.nodes);
             setEdges(result.edges);
         });
+
+        const fetchGraphData = async () => {
+            try {
+                const response = await fetch("http://localhost:3001/generate-graph", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        notebookData: {"tester":"value"}//titanic_top_4_with_ensemble_modeling, // Provide the notebook data here
+                    }),
+                });
+                const data = await response.json();
+                setNodes(data.nodes);
+                setEdges(data.edges);
+                console.log(data.chatResponse); // Handle chat response as needed
+            } catch (error) {
+                console.error("Error fetching graph data:", error);
+            }
+        };
+
+        fetchGraphData();
 
     }, []);
 
