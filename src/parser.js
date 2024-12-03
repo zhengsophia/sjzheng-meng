@@ -1,7 +1,7 @@
 function detectPythonVariables(pythonCode) {
   //   console.log("in python code", pythonCode);
 
-  // Remove comments
+  // remove comments
   const removeComments = (code) => {
     return code
       .replace(/#.*$/gm, "")
@@ -9,7 +9,7 @@ function detectPythonVariables(pythonCode) {
       .replace(/"""[\s\S]*?"""/g, "");
   };
 
-  // Remove string literals to avoid false positives
+  // remove string literals assigned to things (not actually var names -> false positives)
   const removeStrings = (code) => {
     return code.replace(/'[^']*'/g, "''").replace(/"[^"]*"/g, '""');
   };
@@ -20,7 +20,7 @@ function detectPythonVariables(pythonCode) {
   const assigned = new Set();
   const used = new Set();
 
-  // Regular expressions for different types of variable assignments
+  // regex for different types of variable assignments
   const assignmentPatterns = [
     // Basic assignment: x = 1
     /^\s*([a-zA-Z_]\w*)\s*=(?!=)/,
@@ -52,7 +52,7 @@ function detectPythonVariables(pythonCode) {
           if (funcName && /^[a-zA-Z_]\w*$/.test(funcName)) {
             assigned.add(funcName);
           }
-          // Process parameters
+          // Process parameters -> do not need to keep track of transient parameters
           //   const params = match[2].split(",");
           //   params.forEach((param) => {
           //     const paramName = param.trim().split("=")[0].trim();

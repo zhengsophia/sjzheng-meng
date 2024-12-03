@@ -2,13 +2,14 @@ import React from 'react';
 import { Handle, NodeProps, Position } from 'reactflow';
 
 const CircleNode: React.FC<NodeProps> = ({ data }) => {
+  console.log('background Color', data.backgroundColor)
   return (
     <div style={{
       width: '80px',
       height: '80px',
       borderRadius: '50%',
-      background: '#f9f6ed',
-      color: 'black',
+      backgroundColor: data.backgroundColor || '#f9f6ed', 
+      color: 'black', 
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
