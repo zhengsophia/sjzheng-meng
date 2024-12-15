@@ -48,6 +48,7 @@ const generatePrompt = (codeCells) => {
 
     ${codeCells.map((code, i) => `Block ${i + 1}:\n${code}`).join("\n\n")}
     `;
+
   return prompt;
 };
 
@@ -138,8 +139,72 @@ app.get("/notebooks/:notebookName", async (req, res) => {
       notebookCells.map((cell) => cell.source.join("\n"))
     );
     // get LLM reponse -> aggregate pattern analysis
-    const chatResponse = await getChatResponse(prompt);
-    console.log("LLM response", chatResponse.content);
+    // const chatResponse = await getChatResponse(prompt);
+    const chatResponse = `Based on the provided notebook cell structures, here's a categorized analysis of the cells grouped by their functionality, along with the range of cell executions contained within each category.
+
+\`\`\`javascript
+const analysisFunctions = [
+    {
+        "label": "Environment Setup",
+        "cell_start": 1,
+        "cell_end": 1
+    },
+    {
+        "label": "Data Import",
+        "cell_start": 3,
+        "cell_end": 3
+    },
+    {
+        "label": "Data Overview",
+        "cell_start": 4,
+        "cell_end": 9
+    },
+    {
+        "label": "Data Cleaning",
+        "cell_start": 6,
+        "cell_end": 28
+    },
+    {
+        "label": "Feature Engineering",
+        "cell_start": 16,
+        "cell_end": 38
+    },
+    {
+        "label": "Visualizations",
+        "cell_start": 11,
+        "cell_end": 58
+    },
+    {
+        "label": "Modeling Setup",
+        "cell_start": 62,
+        "cell_end": 65
+    },
+    {
+        "label": "Model Training",
+        "cell_start": 66,
+        "cell_end": 67
+    },
+    {
+        "label": "Model Prediction",
+        "cell_start": 68,
+        "cell_end": 70
+    }
+];
+\`\`\`
+
+### Explanation of the Categorization:
+1. **Environment Setup**: Includes cell for importing libraries and modules essential for the analysis.
+2. **Data Import**: Includes cells where the datasets are loaded from CSV files.
+3. **Data Overview**: Cells that give insights on the shape, structure, and basic statistics of the datasets.
+4. **Data Cleaning**: Cells that involve tasks such as dropping NaN values, cleaning text data, and other preprocessing operations.
+5. **Feature Engineering**: Cells focused on creating new features derived from existing data (like calculating word counts, etc.).
+6. **Visualizations**: Cells responsible for plotting and visualizing data through various plots and figures to understand distributions and relationships visually.
+7. **Modeling Setup**: Cells for preparing the model environment, including setting up data formats and structures needed to train the model.
+8. **Model Training**: Cells involved in the training of the sentiment analysis model on provided data.
+9. **Model Prediction**: Cells that handle the prediction of sentiments using the trained model and preparing this data for submission.
+
+This categorization ensures clear structure and logical flow for the notebook's operations, each serving a specific purpose in the analysis workflow.`;
+    // console.log("LLM response", chatResponse.content);
     //     const chatResponse = `To categorize the blocks of code based on their functionality in a data analysis context, we can group the notebook cells into several categories, such as "Environment Setup", "Data Loading", "Data Cleaning", "Exploratory Data Analysis", "Feature Engineering", "Modeling", and "Evaluation". Below is a structured analysis of the grouped blocks with their corresponding cell execution numbers.
 
     // \`\`\`javascript
@@ -195,7 +260,8 @@ app.get("/notebooks/:notebookName", async (req, res) => {
 
     // parse the LLM response to return the original filtered cells but also with the pattern labels
     // const analysisLabels = JSON.parse(chatResponse.content);
-    const analysisLabels = await cleanChatResponse(chatResponse.content);
+    const analysisLabels = await cleanChatResponse(chatResponse);
+    // const analysisLabels = await cleanChatResponse(chatResponse.content);
     console.log("label array", analysisLabels);
 
     const labeledCells = await addLabelsToCells(notebookCells, analysisLabels);

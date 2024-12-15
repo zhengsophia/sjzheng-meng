@@ -10,6 +10,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import MainNode from "./components/MainNode";
 import SatelliteNode from "./components/SatelliteNode";
+import SuperNode from "./components/SuperNode";
 import Legend from "./components/Legend";
 import extractVariablesFromCode from "./parser";
 import dagre from "@dagrejs/dagre";
@@ -35,7 +36,7 @@ interface PreliminaryEdges {
     target: string;
 }
 
-const nodeTypes = { MainNode: MainNode, SatelliteNode: SatelliteNode };
+const nodeTypes = { MainNode: MainNode, SatelliteNode: SatelliteNode, SuperNode: SuperNode };
 
 const Graph: React.FC = () => {
     // initialize graph with dummy data
@@ -156,7 +157,7 @@ const Graph: React.FC = () => {
                 const label: any = labels[index];
                 colorMap[label] = colors[index % colors.length]; // go through the colors
             }
-
+            console.log('color map', colorMap);
             return colorMap;
         };
 
@@ -168,6 +169,9 @@ const Graph: React.FC = () => {
             const lastAssignedTracker: Record<string, number> = {};
             
             const notebookCells = await fetchNotebook();
+
+            const colorMap = await createColorMap(notebookCells);
+            setColorMap(colorMap);
             
             console.log('test notebook cells', notebookCells);
             for (let i = 0; i < notebookCells.length; i++) {
@@ -235,38 +239,82 @@ const Graph: React.FC = () => {
                     // extract all variables that are updated in it
                     // code in source : string[]
                     // pushing these nodes before they have positions
-                const colorMap = await createColorMap(notebookCells);
-                setColorMap(colorMap);
                 const nodeColor = colorMap[cell.label] || "#B0BEC5"; // Default to gray if no color is found
                 console.log('nodeColor', nodeColor)
-                prelimNodes.push({
+                const node: PreliminaryNode = {
                     id: (i + 1).toString(),
-                    data: { label: (i+1).toString(), backgroundColor: nodeColor }
-                });
+                    data: { label: (i+1).toString(), backgroundColor: nodeColor, analysisLabel: cell.label }
+                }
+                prelimNodes.push(node);
+                console.log('updated node', node)
     
                 // (3) SATELLITE NODE CREATION
-                artifacts.forEach((artifact, index) => {
-                    console.log('artifact', i+1, artifact)
-                    const satelliteNodeId = `${i+1}-artifact-${index}`;
-                    prelimNodes.push({
-                        id: satelliteNodeId,
-                        data: { label: artifact }
-                    });
-                    // NOTE: don't need to create an edge actually, reactflow supports floating nodes~
-                    // creating edge from main node to satellite node
-                    // prelimEdges.push({
-                    //     source: i.toString(),
-                    //     target: satelliteNodeId,
-                    //     style: satelliteEdgeStyle
-                    // });
-                });
+                // artifacts.forEach((artifact, index) => {
+                //     console.log('artifact', i+1, artifact)
+                //     const satelliteNodeId = `${i+1}-artifact-${index}`;
+                //     prelimNodes.push({
+                //         id: satelliteNodeId,
+                //         data: { label: artifact }
+                //     });
+                //     // NOTE: don't need to create an edge actually, reactflow supports floating nodes~
+                //     // creating edge from main node to satellite node
+                //     // prelimEdges.push({
+                //     //     source: i.toString(),
+                //     //     target: satelliteNodeId,
+                //     //     style: satelliteEdgeStyle
+                //     // });
+                // });
             }
-    
+
+            const labelGroups: Record<string, PreliminaryNode[]> = {};
+            prelimNodes.forEach((node) => {
+                const label = node.data.analysisLabel || "Unlabeled";
+                if (!labelGroups[label]) {
+                    labelGroups[label] = [];
+                }
+                labelGroups[label].push(node);
+            });
+
+            const labelCounts: Record<string, number> = {};
+            prelimNodes.forEach((node) => {
+                const label = node.data.analysisLabel || "Unlabeled";
+                labelCounts[label] = (labelCounts[label] || 0) + 1;
+            });
+            const aggregatedNodes: PreliminaryNode[] = Object.keys(labelCounts).map((label, index) => ({
+                id: `super-${index}`,
+                type: "SuperNode", // Set the node type to SuperNode
+                data: { 
+                    label, 
+                    backgroundColor: colorMap[label] || "#B0BEC5",
+                    size: labelCounts[label], // Size proportional to node count
+                },
+            }));
+            console.log('color map', colorMap)
+            console.log('label counts', labelCounts);
+            
+
+            const aggregatedEdges: PreliminaryEdges[] = prelimEdges.map((edge) => {
+                const sourceGroup = labelGroups[edge.source]?.[0]?.id || edge.source;
+                const targetGroup = labelGroups[edge.target]?.[0]?.id || edge.target;
+            
+                return { source: sourceGroup, target: targetGroup };
+            }).filter((edge, index, self) =>
+                self.findIndex(e => e.source === edge.source && e.target === edge.target) === index
+            ); // Ensure unique edges
+            
+
             // process nodes given layout to add position 
             const { edges, nodes } = calculateGraphLayout(
-                prelimNodes,
-                prelimEdges
+                aggregatedNodes,
+                aggregatedEdges
             );
+
+            
+            // // process nodes given layout to add position 
+            // const { edges, nodes } = calculateGraphLayout(
+            //     prelimNodes,
+            //     prelimEdges
+            // );
     
             return { edges, nodes };
         }
@@ -358,16 +406,29 @@ function calculateGraphLayout(nodes: any, edges: any): any {
         }
     
         // Main node positioning
+        // return {
+        //     id: node.id,
+        //     type: "MainNode",
+        //     position: {
+        //         x: nodeWithPosition.x,
+        //         y: nodeWithPosition.y,
+        //     },
+        //     data: {
+        //         label: node.data.label,
+        //         backgroundColor: node.data.backgroundColor
+        //     },
+        // };
         return {
             id: node.id,
-            type: "MainNode",
+            type: "SuperNode",
             position: {
                 x: nodeWithPosition.x,
                 y: nodeWithPosition.y,
             },
             data: {
                 label: node.data.label,
-                backgroundColor: node.data.backgroundColor
+                backgroundColor: node.data.backgroundColor,
+                size: node.data.size
             },
         };
     });
