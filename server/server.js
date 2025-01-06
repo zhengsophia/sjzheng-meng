@@ -1,9 +1,13 @@
-const express = require("express");
-const fs = require("fs");
-const path = require("path");
-const axios = require("axios");
-const cors = require("cors");
-const dotenv = require("dotenv");
+import express from "express";
+import fs from "fs";
+import path from "path";
+import axios from "axios";
+import cors from "cors";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import { z } from "zod";
+import { zodResponseFormat } from "openai/helpers/zod";
+import { fileURLToPath } from "url";
 
 const app = express();
 const PORT = 3001;
@@ -15,6 +19,9 @@ app.use(cors());
 app.use(express.json());
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // fetch notebook, filter code cells, only return relevant information
 const fetchNotebookCells = async (notebookName) => {
@@ -41,90 +48,78 @@ const fetchNotebookCells = async (notebookName) => {
 // create the prompt -> TO BE FINETUNED
 // this returns text + the json objects right now
 const generatePrompt = (codeCells) => {
-  const prompt = `Analyze the following json of all notebook cells and group them based on their functionality or structural patterns of analysis such as 'Environment Setup', 'Feature Engineering', 'Modeling', etc.
+  // const prompt = `Analyze the following json of all notebook cells and group them based on their functionality or structural patterns of analysis such as 'Environment Setup', 'Feature Engineering', 'Modeling', etc.
 
-    For each group, return a Javascript object with a concise label of the analysis functionality and the cell executions numbers contained
-    (i.e. {"label": "Environment Setup", "cell_start": 1, "cell_end": 4})
+  // vanilla prompt - one shot learning
+  //   For each group, return a Javascript object with a concise label of the analysis functionality and the cell executions numbers contained
+  //   (i.e. {"label": "Environment Setup", "cell_start": 1, "cell_end": 4})
+
+  //   ${codeCells.map((code, i) => `Block ${i + 1}:\n${code}`).join("\n\n")}
+  //   `;
+
+  // task taxonomy - prompt testing
+  // const prompt = `Analyze the following json of all notebook cells and group them based on their functionality or structural patterns of analysis by providing analysis labels.
+
+  //   ${codeCells.map((code, i) => `Block ${i + 1}:\n${code}`).join("\n\n")}
+  //   `;
+
+  // structured output prompt
+  const prompt = `Analyze the following JSON of notebook cells and group them based on their functionality and/or structural patterns of analysis. Group should be the general pattern label, while subgroups label more specifically. Cell should specify the one or more cell numbers described by that subgroup.  
 
     ${codeCells.map((code, i) => `Block ${i + 1}:\n${code}`).join("\n\n")}
     `;
   return prompt;
 };
 
-// feeding into the LLM, standard dev start
-const getChatResponse = async (prompt) => {
+////////////////////////////////////////
+///    TESTING STRUCTURED OUTPUTS   ///
+///////////////////////////////////////
+const openai = new OpenAI();
+
+const Subgroup = z.object({
+  name: z.string(),
+  cells: z.array(z.number()),
+});
+
+const Group = z.object({
+  name: z.string(),
+  subgroups: z.array(Subgroup),
+});
+
+const NotebookSummarization = z.object({
+  groups: z.array(Group),
+});
+
+const getStructuredOutput = async (prompt) => {
   try {
-    const response = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: "You are a helpful assistant." },
-          { role: "user", content: prompt },
-        ],
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
+    const response = await openai.beta.chat.completions.parse({
+      model: "gpt-4o-2024-08-06",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are an expert at structured data extraction. You will be given unstructured text from a JSON of notebook cells and should convert it into the given structure..",
         },
-      }
-    );
-    return response.data.choices[0].message;
+        { role: "user", content: prompt },
+      ],
+      response_format: zodResponseFormat(
+        NotebookSummarization,
+        "notebook_summarization"
+      ),
+    });
+    console.log("unparsed llm response", response.choices[0].message);
+    return response.choices[0].message.parsed;
+    // const notebook_summarization = response.choices[0].message.parsed;
+    // console.log("notebook summarization", notebook_summarization);
   } catch (error) {
     console.error("Error fetching OpenAI response:", error);
     throw error;
   }
 };
 
-// extracts just the array of jsons from the response
-const cleanChatResponse = async (responseText) => {
-  try {
-    // regex to match and extract the array content
-    const match = responseText.match(/const\s+\w+\s*=\s*(\[[\s\S]*?\]);/);
-
-    if (match && match[1]) {
-      const strArr = match[1];
-      // removing single-line comments
-      const cleanedStrArr = strArr
-        .replace(/\/\/.*$/gm, "")
-        .replace(/\/\*[\s\S]*?\*\//g, "");
-      // console.log("json parsed as arr", JSON.parse(cleanedStrArr));
-      return JSON.parse(cleanedStrArr); // return the array of json objects
-    } else {
-      throw new Error("No array content found in response text.");
-    }
-  } catch (error) {
-    console.error("Error extracting array content:", error);
-    return null;
-  }
-};
-
-// assigns the label based on execution count to notebookCells
-const addLabelsToCells = async (notebookCells, labels) => {
-  const labeledCells = notebookCells.map((cell) => {
-    let matchingGroup = null;
-    // console.log("testing labels", labels);
-    // console.log("is labels an aray", Array.isArray(labels));
-    labels.forEach((label) => {
-      // console.log("testing single label", label);
-      if (
-        cell.execution_count >= label.cell_start &&
-        cell.execution_count <= label.cell_end
-      ) {
-        matchingGroup = label;
-      }
-    });
-    // console.log("matching group", matchingGroup);
-    // unlabeled if GPT did not assign a label to any cells
-    return {
-      ...cell,
-      label: matchingGroup ? matchingGroup.label : "Unlabeled",
-    };
-  });
-  // console.log("labeledCells", labeledCells);
-  return labeledCells;
-};
+////////////////////////////////////////
+///            API ROUTES            ///
+///////////////////////////////////////
 
 // custom API GET route to return just filtered notebook cells JSON to frontend
 app.get("/notebooks/:notebookName", async (req, res) => {
@@ -138,73 +133,8 @@ app.get("/notebooks/:notebookName", async (req, res) => {
       notebookCells.map((cell) => cell.source.join("\n"))
     );
     // get LLM reponse -> aggregate pattern analysis
-    const chatResponse = await getChatResponse(prompt);
-    console.log("LLM response", chatResponse.content);
-    //     const chatResponse = `To categorize the blocks of code based on their functionality in a data analysis context, we can group the notebook cells into several categories, such as "Environment Setup", "Data Loading", "Data Cleaning", "Exploratory Data Analysis", "Feature Engineering", "Modeling", and "Evaluation". Below is a structured analysis of the grouped blocks with their corresponding cell execution numbers.
-
-    // \`\`\`javascript
-    // const groupedCells = [
-    //     {
-    //         "label": "Environment Setup",
-    //         "cell_start": 1,
-    //         "cell_end": 1
-    //     },
-    //     {
-    //         "label": "Data Loading",
-    //         "cell_start": 2,
-    //         "cell_end": 2
-    //     },
-    //     {
-    //         "label": "Data Cleaning",
-    //         "cell_start": 3,
-    //         "cell_end": 35 // Includes cell blocks for outlier detection, dropping outliers, filling missing values, and feature transformations
-    //     },
-    //     {
-    //         "label": "Exploratory Data Analysis",
-    //         "cell_start": 11,
-    //         "cell_end": 34 // Includes descriptive stats, plots and correlation analysis.
-    //     },
-    //     {
-    //         "label": "Feature Engineering",
-    //         "cell_start": 36,
-    //         "cell_end": 46 // Includes all the steps taken to create new features and handling categorical variables
-    //     },
-    //     {
-    //         "label": "Modeling",
-    //         "cell_start": 63,
-    //         "cell_end": 76 // Includes model training, hyperparameter tuning, and cross-validation results.
-    //     },
-    //     {
-    //         "label": "Evaluation",
-    //         "cell_start": 64,
-    //         "cell_end": 75 // Includes model evaluation metrics and visualizations of results.
-    //     }
-    // ];
-    // \`\`\`
-
-    // ### Explanation of Grouping:
-    // 1. **Environment Setup**: Contains imports and initial settings.
-    // 2. **Data Loading**: Includes the code for loading the train and test datasets.
-    // 3. **Data Cleaning**: Involves all tasks related to cleaning the data such as outlier detection, dropping outliers, filling missing values, and handling nulls.
-    // 4. **Exploratory Data Analysis**: Covers all blocks that visualize and summarize data characteristics, exploring relationships between features and the target.
-    // 5. **Feature Engineering**: Encompasses all operations for creating new features based on existing data and transforming categorical variables.
-    // 6. **Modeling**: Contains portions related to defining and fitting models, as well as methods for tuning hyperparameters and comparing model performances.
-    // 7. **Evaluation**: Involves the analysis and presentation of the model performance, including results from different classifiers and ensemble methods.
-
-    // This structure helps organize the analysis in a coherent manner, making it easier to understand the flow of the data analysis process in the notebook.`;
-
-    // parse the LLM response to return the original filtered cells but also with the pattern labels
-    // const analysisLabels = JSON.parse(chatResponse.content);
-    const analysisLabels = await cleanChatResponse(chatResponse.content);
-    console.log("label array", analysisLabels);
-
-    const labeledCells = await addLabelsToCells(notebookCells, analysisLabels);
-    // console.log("labeled cells", labeledCells);
-
-    const response = {
-      cells: labeledCells,
-    };
-    res.json(response);
+    const structuredOutputResponse = await getStructuredOutput(prompt);
+    console.log("LLM response", structuredOutputResponse);
   } catch (error) {
     res.status(500).json({ error: "Failed to process notebook" });
   }

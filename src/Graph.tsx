@@ -84,10 +84,7 @@ const Graph: React.FC = () => {
         ///////////////////////////////////////////////
         const fetchNotebook = async () => {
             try {
-                // const response = await fetch('http://localhost:3001/notebooks/titanic-top-4-with-ensemble-modeling.ipynb');
-                const response = await fetch('http://localhost:3001/notebooks/twitter-sentiment-extaction-analysis-eda-and-model.ipynb');
-                // const response = await fetch('http://localhost:3001/notebooks/fitbit-fitness-tracker-data.ipynb');
-                // const response = await fetch('http://localhost:3001/notebooks/eda-of-bookings-and-ml-to-predict-cancelations.ipynb');
+                const response = await fetch('http://localhost:3001/notebooks/amazon_reviews_logit_tfidf.ipynb');
                 if (!response.ok) throw new Error('Failed to fetch notebook');
                 const notebook = await response.json();
                 console.log('notebook response:', notebook);
