@@ -135,6 +135,7 @@ app.get("/notebooks/:notebookName", async (req, res) => {
     // get LLM reponse -> aggregate pattern analysis
     const structuredOutputResponse = await getStructuredOutput(prompt);
     console.log("LLM response", structuredOutputResponse);
+    res.json({ success: true, data: structuredOutputResponse });
   } catch (error) {
     res.status(500).json({ error: "Failed to process notebook" });
   }
